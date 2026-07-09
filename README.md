@@ -35,29 +35,19 @@ Optionally add the domain plugins:
 /plugin install resolve-customer-management@resolve
 ```
 
-The base plugin includes the MCP connector — on first use, Claude Code opens the Resolve sign-in (your dashboard login).
+The base plugin includes the MCP connector — on first use, Claude Code opens the Resolve sign-in (your dashboard login). See the [Claude Code plugins documentation](https://code.claude.com/docs/en/plugins).
 
 ### Claude (web / desktop)
 
-Download the skill zips from the [docs site](https://docs.resolvepay.com/guides/mcp-skill) and upload under **Settings > Capabilities > Skills**, then add the Resolve connector (**Settings > Connectors**, server URL `https://mcp.resolvepay.com/mcp`).
+Download the skill zips from the [docs site](https://docs.resolvepay.com/guides/mcp-skill) and upload them as skills — see [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude). Then add the Resolve connector (server URL `https://mcp.resolvepay.com/mcp`).
 
 ### ChatGPT
 
-1. Add the Resolve connector (Settings > Apps & Connectors, server URL `https://mcp.resolvepay.com/mcp`).
-2. Go to **Skills > New skill > Upload from your computer** and upload the skill(s) from [`openai/`](openai/) (zip a folder, or download the prebuilt zips from the [docs site](https://docs.resolvepay.com/guides/mcp-skill)).
+Add the Resolve connector (server URL `https://mcp.resolvepay.com/mcp`), then upload the skill(s) from [`openai/`](openai/) — zip a folder, or download the prebuilt zips from the [docs site](https://docs.resolvepay.com/guides/mcp-skill). See [Skills in ChatGPT](https://help.openai.com/en/articles/20001066-skills-in-chatgpt).
 
-> Skills in ChatGPT are in beta on Business, Enterprise, and Edu plans. Workspace admins can publish skills to the workspace library for the whole team.
+### Codex
 
-### Codex CLI
-
-Copy the skill folders from [`openai/`](openai/) into your skills directory:
-
-```bash
-git clone https://github.com/resolvepay/resolve-mcp-plugin.git
-cp -r resolve-mcp-plugin/openai/* ~/.codex/skills/
-```
-
-Connect Codex to the MCP with an [M2M token](https://docs.resolvepay.com/guides/mcp-authentication).
+Use the skill folders from [`openai/`](openai/) — see [Agent Skills in Codex](https://developers.openai.com/codex/skills) for where skills live. Connect Codex to the MCP with an [M2M token](https://docs.resolvepay.com/guides/mcp-authentication).
 
 ### Custom MCP clients
 
