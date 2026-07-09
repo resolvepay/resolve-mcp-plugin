@@ -1,0 +1,31 @@
+{
+  "name": "resolve",
+  "owner": {
+    "name": "Resolve Pay",
+    "url": "https://resolvepay.com"
+  },
+  "metadata": {
+    "description": "Plugins for managing your Resolve Pay account from AI assistants via the Resolve MCP",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "resolve-mcp",
+      "source": "./plugins/resolve-mcp",
+      "description": "Base plugin: connects the Resolve MCP server and teaches the assistant Resolve's core workflows — customers, invoices, shipments, payments, and credit notes.",
+      "category": "productivity"
+    },
+    {
+      "name": "resolve-invoice-management",
+      "source": "./plugins/resolve-invoice-management",
+      "description": "Deep-dive invoice workflows: full lifecycle rules, PDF handling, advances, credit notes, and shipments. Pairs with the resolve-mcp plugin (requires the Resolve MCP connector).",
+      "category": "productivity"
+    },
+    {
+      "name": "resolve-customer-management",
+      "source": "./plugins/resolve-customer-management",
+      "description": "Customer onboarding and credit workflows: create customers, run credit checks, track enrollment, and read credit lines. Pairs with the resolve-mcp plugin (requires the Resolve MCP connector).",
+      "category": "productivity"
+    }
+  ]
+}
