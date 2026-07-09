@@ -8,7 +8,7 @@
       "name": "resolve-mcp",
       "source": {
         "source": "local",
-        "path": "./plugins/resolve-mcp"
+        "path": "./openai/plugins/resolve-mcp"
       },
       "policy": {
         "installation": "AVAILABLE",
@@ -20,7 +20,7 @@
       "name": "resolve-invoice-management",
       "source": {
         "source": "local",
-        "path": "./plugins/resolve-invoice-management"
+        "path": "./openai/plugins/resolve-invoice-management"
       },
       "policy": {
         "installation": "AVAILABLE"
@@ -31,7 +31,7 @@
       "name": "resolve-customer-management",
       "source": {
         "source": "local",
-        "path": "./plugins/resolve-customer-management"
+        "path": "./openai/plugins/resolve-customer-management"
       },
       "policy": {
         "installation": "AVAILABLE"

@@ -2,12 +2,12 @@
 
 Plugins and skills for managing your [Resolve Pay](https://resolvepay.com) account from AI assistants, powered by the [Resolve MCP](https://docs.resolvepay.com/guides/mcp) server (`https://mcp.resolvepay.com/mcp`).
 
-Everything lives on `main`. Each path is its own marketplace:
+Everything lives on `main`. The repo is a marketplace for both clients — each reads its own manifest at the root and gets the right plugin variant:
 
-| Marketplace root | For | Manifest | Contents |
-|---|---|---|---|
-| `/` (repo root) | Claude Code | `.claude-plugin/marketplace.json` | Plugins in [`plugins/`](plugins/) bundling the MCP connector and skills |
-| [`openai/`](openai/) | Codex (also source for ChatGPT skills) | `openai/.agents/plugins/marketplace.json` | Plugins in [`openai/plugins/`](openai/plugins/) using the file-attachment flow |
+| Manifest | For | Plugins |
+|---|---|---|
+| `.claude-plugin/marketplace.json` | Claude Code | [`plugins/`](plugins/) — bundle the MCP connector and skills (temp-file upload flow) |
+| `.agents/plugins/marketplace.json` | Codex | [`openai/plugins/`](openai/plugins/) — file-attachment flow (also the source for ChatGPT skills) |
 
 ## What's included
 
@@ -47,13 +47,13 @@ Add the Resolve connector (server URL `https://mcp.resolvepay.com/mcp`), then up
 
 ### Codex
 
-Add this repo as a plugin marketplace with the sparse path `openai/`:
+Add this repo as a plugin marketplace (no sparse path needed):
 
 ```bash
-codex plugin marketplace add https://github.com/resolvepay/resolve-mcp-plugin.git --sparse openai
+codex plugin marketplace add https://github.com/resolvepay/resolve-mcp-plugin.git
 ```
 
-(Or in the UI: source `https://github.com/resolvepay/resolve-mcp-plugin`, git ref `main`, sparse path `openai/`.) Then install `resolve-mcp` and the optional domain plugins. See the [Codex plugins documentation](https://developers.openai.com/codex/plugins).
+Then install `resolve-mcp` and the optional domain plugins. See the [Codex plugins documentation](https://developers.openai.com/codex/plugins).
 
 ### Custom MCP clients
 
