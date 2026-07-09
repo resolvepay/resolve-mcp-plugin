@@ -1,0 +1,42 @@
+{
+  "name": "resolve",
+  "interface": {
+    "displayName": "Resolve Pay Plugins"
+  },
+  "plugins": [
+    {
+      "name": "resolve-mcp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/resolve-mcp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "resolve-invoice-management",
+      "source": {
+        "source": "local",
+        "path": "./plugins/resolve-invoice-management"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "resolve-customer-management",
+      "source": {
+        "source": "local",
+        "path": "./plugins/resolve-customer-management"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

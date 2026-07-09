@@ -1,0 +1,7 @@
+{
+  "mcp_servers": {
+    "resolve": {
+      "url": "https://mcp.resolvepay.com/mcp"
+    }
+  }
+}

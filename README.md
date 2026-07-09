@@ -2,12 +2,12 @@
 
 Plugins and skills for managing your [Resolve Pay](https://resolvepay.com) account from AI assistants, powered by the [Resolve MCP](https://docs.resolvepay.com/guides/mcp) server (`https://mcp.resolvepay.com/mcp`).
 
-Everything lives on `main`:
+Everything lives on `main`. Each path is its own marketplace:
 
-| Directory | For | Contents |
-|---|---|---|
-| [`plugins/`](plugins/) | Claude Code (plugin marketplace) | Plugins bundling the MCP connector and skills |
-| [`openai/`](openai/) | ChatGPT & Codex | Skill folders using ChatGPT's file-attachment flow |
+| Marketplace root | For | Manifest | Contents |
+|---|---|---|---|
+| `/` (repo root) | Claude Code | `.claude-plugin/marketplace.json` | Plugins in [`plugins/`](plugins/) bundling the MCP connector and skills |
+| [`openai/`](openai/) | Codex (also source for ChatGPT skills) | `openai/.agents/plugins/marketplace.json` | Plugins in [`openai/plugins/`](openai/plugins/) using the file-attachment flow |
 
 ## What's included
 
@@ -43,11 +43,17 @@ Download the skill zips from the [docs site](https://docs.resolvepay.com/guides/
 
 ### ChatGPT
 
-Add the Resolve connector (server URL `https://mcp.resolvepay.com/mcp`), then upload the skill(s) from [`openai/`](openai/) — zip a folder, or download the prebuilt zips from the [docs site](https://docs.resolvepay.com/guides/mcp-skill). See [Skills in ChatGPT](https://help.openai.com/en/articles/20001066-skills-in-chatgpt).
+Add the Resolve connector (server URL `https://mcp.resolvepay.com/mcp`), then upload the skill(s) from [`openai/plugins/`](openai/plugins/) — zip a skill folder, or download the prebuilt zips from the [docs site](https://docs.resolvepay.com/guides/mcp-skill). See [Skills in ChatGPT](https://help.openai.com/en/articles/20001066-skills-in-chatgpt).
 
 ### Codex
 
-Use the skill folders from [`openai/`](openai/) — see [Agent Skills in Codex](https://developers.openai.com/codex/skills) for where skills live. Connect Codex to the MCP with an [M2M token](https://docs.resolvepay.com/guides/mcp-authentication).
+Add this repo as a plugin marketplace with the sparse path `openai/`:
+
+```bash
+codex plugin marketplace add https://github.com/resolvepay/resolve-mcp-plugin.git --sparse openai
+```
+
+(Or in the UI: source `https://github.com/resolvepay/resolve-mcp-plugin`, git ref `main`, sparse path `openai/`.) Then install `resolve-mcp` and the optional domain plugins. See the [Codex plugins documentation](https://developers.openai.com/codex/plugins).
 
 ### Custom MCP clients
 

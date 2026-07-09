@@ -1,0 +1,21 @@
+{
+  "name": "resolve-customer-management",
+  "version": "1.0.0",
+  "description": "Customer onboarding and credit workflows for Resolve Pay: create customers, run credit checks, track enrollment, and read credit lines. Requires the Resolve MCP connector (install the resolve-mcp plugin).",
+  "author": {
+    "name": "Resolve Pay",
+    "url": "https://resolvepay.com"
+  },
+  "homepage": "https://docs.resolvepay.com/guides/mcp",
+  "license": "MIT",
+  "keywords": ["resolve", "mcp", "customers", "credit-checks", "onboarding"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Resolve Customer Management",
+    "shortDescription": "Customer onboarding and credit workflows for Resolve Pay",
+    "developerName": "Resolve Pay",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://resolvepay.com"
+  }
+}

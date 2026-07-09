@@ -1,0 +1,21 @@
+{
+  "name": "resolve-invoice-management",
+  "version": "1.0.0",
+  "description": "Deep-dive invoice workflows for Resolve Pay: full lifecycle rules, PDF handling, advances, credit notes, and shipments. Requires the Resolve MCP connector (install the resolve-mcp plugin).",
+  "author": {
+    "name": "Resolve Pay",
+    "url": "https://resolvepay.com"
+  },
+  "homepage": "https://docs.resolvepay.com/guides/mcp",
+  "license": "MIT",
+  "keywords": ["resolve", "mcp", "invoices", "credit-notes", "shipments"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Resolve Invoice Management",
+    "shortDescription": "Deep-dive invoice workflows for Resolve Pay",
+    "developerName": "Resolve Pay",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://resolvepay.com"
+  }
+}
