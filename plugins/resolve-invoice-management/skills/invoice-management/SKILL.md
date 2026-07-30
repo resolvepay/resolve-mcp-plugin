@@ -17,6 +17,10 @@ covers the full invoice lifecycle in depth. For account basics (account selectio
 customer search strategy), the base `resolve-mcp` skill applies; this skill assumes
 the Resolve MCP connector is already installed.
 
+> **Merchant accounts only.** If `list_resolve_accounts` returns a `partner_type`, this
+> is a partner account and the tools below are not available to it — it has the
+> `partner_*` tools instead. Use the `resolve-partner-mcp` plugin/skill for it.
+
 ---
 
 ## The Invoice Lifecycle

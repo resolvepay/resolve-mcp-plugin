@@ -1,5 +1,5 @@
 ---
-name: customer-management
+name: customer-management-chatgpt
 description: >
   Customer onboarding and credit management for a Resolve Pay account via the MCP.
   Use this skill for any customer-heavy task: adding new customers, running credit
@@ -16,6 +16,10 @@ You are managing customers (buyers) on a Resolve Pay account through the MCP too
 In Resolve's B2B model, the **customer is the buyer who owes the money** — Resolve
 extends the credit line to them and collects from them directly. This skill assumes
 the Resolve MCP connector is already installed.
+
+> **Merchant accounts only.** If `list_resolve_accounts` returns a `partner_type`, this
+> is a partner account and the tools below are not available to it — it has the
+> `partner_*` tools instead. Use the `resolve-partner-mcp` plugin/skill for it.
 
 ---
 
@@ -74,7 +78,7 @@ Update details later with `update_customer(customer_id=..., ...)`.
 
 New customers start with `credit_status=null`. To get them a credit line:
 
-1. **`request_credit_check(customer_id=<id>)`** — submits for underwriting. A `204`
+1. **`request_credit_check(merchant_customer_id=<id>)`** — submits for underwriting. A `204`
    means the request was **accepted**, not decided.
 2. Status moves to `pending`, then `approved` / `declined` within **1 business day**
    (instant decisions happen but are not guaranteed). This is async — poll
@@ -117,7 +121,7 @@ what fixes it (credit check, enrollment link, or a smaller amount).
 | Request | Tool(s) |
 |---|---|
 | "Add Blue Ridge Supply as a customer" | search first → `create_customer(...)` |
-| "Run a credit check on Acme" | `request_credit_check(customer_id=...)` |
+| "Run a credit check on Acme" | `request_credit_check(merchant_customer_id=...)` |
 | "Is Acme approved yet?" | `get_customer(...)` → report `credit_status` |
 | "What's Acme's available credit?" | `get_customer(...)` → `amount_available` |
 | "Get Acme enrolled" | share `net_terms_enrollment_url` from the customer record |
