@@ -13,7 +13,8 @@ Everything lives on `main`. The repo is a marketplace for both clients — each 
 
 | Plugin / skill | What it does |
 |---|---|
-| **resolve-mcp** | Base: the Resolve MCP connector plus the core skill — customers, invoices, shipments, payments, credit notes. Install this first. |
+| **resolve-mcp** | Base for **merchant** accounts: the Resolve MCP connector plus the core skill — customers, invoices, shipments, payments, credit notes. Install this first. |
+| **resolve-partner-mcp** | Base for **partner** accounts: the connector plus the partner skill — sub-merchants, invoices on their behalf, buyers and credit, shipments, payouts. Use instead of `resolve-mcp`. |
 | **resolve-invoice-management** | Deep-dive invoice workflows: lifecycle rules, PDF handling, advances, credit notes, shipments. |
 | **resolve-customer-management** | Customer onboarding and credit: create customers, credit checks, enrollment, credit lines. |
 
@@ -28,7 +29,13 @@ The two file-handling variants exist because ChatGPT attaches files directly to 
 /plugin install resolve-mcp@resolve
 ```
 
-Optionally add the domain plugins:
+If your Resolve account is a **partner** account, install the partner plugin instead — the merchant tools are not available to it:
+
+```
+/plugin install resolve-partner-mcp@resolve
+```
+
+Optionally add the domain plugins — **merchant accounts only**, they teach the unprefixed merchant tools and pair with `resolve-mcp`:
 
 ```
 /plugin install resolve-invoice-management@resolve
@@ -64,4 +71,5 @@ Point your client at `https://mcp.resolvepay.com/mcp` with an M2M bearer token �
 - [Resolve MCP overview](https://docs.resolvepay.com/guides/mcp)
 - [Getting connected](https://docs.resolvepay.com/guides/mcp-connect)
 - [Authentication (web app & M2M)](https://docs.resolvepay.com/guides/mcp-authentication)
-- [Tool reference](https://docs.resolvepay.com/guides/mcp-tools)
+- [Tool reference (merchant)](https://docs.resolvepay.com/guides/mcp-tools)
+- [Tool reference (partner)](https://docs.resolvepay.com/guides/mcp-tools-partner)

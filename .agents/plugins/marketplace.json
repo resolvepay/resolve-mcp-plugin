@@ -17,6 +17,18 @@
       "category": "Productivity"
     },
     {
+      "name": "resolve-partner-mcp",
+      "source": {
+        "source": "local",
+        "path": "./openai/plugins/resolve-partner-mcp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
       "name": "resolve-invoice-management",
       "source": {
         "source": "local",

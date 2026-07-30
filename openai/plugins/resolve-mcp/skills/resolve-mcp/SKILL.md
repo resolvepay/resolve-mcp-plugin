@@ -21,6 +21,10 @@ active. If multiple accounts exist, ask the user which one to use.
 > directly to the conversation and passed straight into tool parameters — there are
 > no `create_temp_file` / `list_temp_files` tools and no upload step.
 
+> **Partner accounts:** if `list_resolve_accounts` shows a `partner_type`, this account
+> is a partner and does **not** have the merchant tools below — it has the `partner_*`
+> tools instead. Use the `resolve-partner-mcp` plugin/skill for it.
+
 ---
 
 ## Understanding Resolve: B2B Net Terms
@@ -228,7 +232,7 @@ create_customer(
 ### Credit workflow
 New customers have `credit_status=null`. To get them a credit line:
 
-1. `request_credit_check(customer_id=<id>)` — submits for underwriting
+1. `request_credit_check(merchant_customer_id=<id>)` — submits for underwriting
 2. A 204 response means the request was accepted. Credit status will update to
    `pending` shortly, then `approved` / `declined` within **1 business day**
    (instant decisions are possible but not guaranteed). This is an async process —
@@ -300,11 +304,22 @@ create them directly. Use these tools to view payment history:
 
 ```python
 list_payments(limit=25)
-get_payment(payment_id=<integer_id>)  # note: payment_id is an integer, not a string
+get_payment(payment_id="<payment_id>")
 ```
 
 Each payment shows which invoices it was applied to and the payment method (ACH, check,
 wire, etc.).
+
+### Payouts
+
+Payouts are the funds Resolve sends you. They are read-only:
+
+```python
+list_payouts(limit=25)
+get_payout(payout_id="<payout_id>")
+list_payout_transactions(limit=25)          # individual transactions within payouts
+get_payout_transaction(payout_transaction_id="<id>")
+```
 
 ---
 
@@ -314,12 +329,24 @@ Set up webhooks to receive real-time events from Resolve. Supported events:
 - `invoice.created`, `invoice.balance_updated`
 - `customer.created`, `customer.status_updated`, `customer.line_amount_updated`,
   `customer.advance_rate_updated`, `customer.credit_decision_created`
+- `order.created`, `order.updated`
+- `payment.created`, `payment.status_changed`
 - `payout.created`, `payout.status_changed`
+
+The four `merchant.*` topics (`created`, `underwriting_completed`, `more_info_needed`,
+`mal_updated`) are partner-only and not available on a merchant account.
+
+`list_webhooks()` shows the endpoints already configured. `delete_webhook` takes the
+`endpoint_url` (not an id) — the URL identifies the endpoint.
 
 ```python
 upsert_webhook(
-  url    = "https://yourserver.com/resolve-webhook",
-  events = ["invoice.created", "invoice.balance_updated", "customer.status_updated"]
+  endpoint_url = "https://yourserver.com/resolve-webhook",   # must be https
+  events       = {                                          # object of booleans, not a list
+    "invoice.created": True,
+    "invoice.balance_updated": True,
+    "customer.status_updated": True
+  }
 )
 ```
 
@@ -333,7 +360,7 @@ Always verify webhook signatures using the `x-webhook-signature` HMAC-SHA256 hea
 |---|---|
 | "Find my customer Acme Corp" | `list_customers(filter={"business_name":...})` → progressive |
 | "Create a new customer" | `create_customer(...)` |
-| "Submit Acme for a credit check" | `request_credit_check(customer_id=...)` |
+| "Submit Acme for a credit check" | `request_credit_check(merchant_customer_id=...)` |
 | "Create and send an invoice" | attach PDF → `create_invoice` → `update_invoice` → `send_invoice` |
 | "Upload my invoice PDF" | ask the user to attach the PDF to the conversation |
 | "Find invoice #INV-1234" | `list_invoices(filter={"number":{"eq":"INV-1234"}})` |
@@ -342,7 +369,7 @@ Always verify webhook signatures using the `x-webhook-signature` HMAC-SHA256 hea
 | "Add tracking to an invoice" | `create_shipment(...)` |
 | "Issue a refund / credit" | `create_credit_note(...)` |
 | "Show recent payments" | `list_payments(limit=25)` |
-| "Set up a webhook" | `upsert_webhook(url=..., events=[...])` |
+| "Set up a webhook" | `upsert_webhook(endpoint_url=..., events={...})` |
 
 ---
 
@@ -378,5 +405,4 @@ state.
 - For multi-step workflows (create → update → send), confirm each step before
   proceeding to the next
 - If an action is destructive (void, cancel, delete), **confirm before calling the tool**
-- All amounts are in USD cents in the API but display as dollars (divide by 100 if
-  `amount_*` fields appear as integers in the raw response)
+- Amounts are decimal dollars (e.g. `2500.00`), not cents — pass and display them as-is

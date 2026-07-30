@@ -1,0 +1,12 @@
+{
+  "name": "resolve-partner-mcp",
+  "version": "1.0.0",
+  "description": "Manage your Resolve Pay partner account from your AI assistant. Bundles the Resolve MCP connector and the partner skill covering sub-merchants, invoices, buyers, credit, shipments, and payouts via the partner-v1 API.",
+  "author": {
+    "name": "Resolve Pay",
+    "url": "https://resolvepay.com"
+  },
+  "homepage": "https://docs.resolvepay.com/guides/mcp-tools-partner",
+  "license": "MIT",
+  "keywords": ["resolve", "mcp", "partner", "marketplace", "sub-merchants", "b2b", "net-terms"]
+}
