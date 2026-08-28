@@ -13,7 +13,7 @@ Everything lives on `main`. The repo is a marketplace for both clients — each 
 
 | Plugin / skill | What it does |
 |---|---|
-| **resolve-mcp** | Base: the Resolve MCP connector plus the core skill — customers, invoices, shipments, payments, credit notes. Install this first. |
+| **resolve-mcp** | Base: the Resolve MCP connector plus the core skill — customers, invoices, shipments, payments, credit notes, accounting sync. Install this first. |
 | **resolve-invoice-management** | Deep-dive invoice workflows: lifecycle rules, PDF handling, advances, credit notes, shipments. |
 | **resolve-customer-management** | Customer onboarding and credit: create customers, credit checks, enrollment, credit lines. |
 

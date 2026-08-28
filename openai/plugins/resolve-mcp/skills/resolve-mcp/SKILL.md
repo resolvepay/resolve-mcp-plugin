@@ -4,11 +4,12 @@ description: >
   Assistant for managing a Resolve Pay account via the MCP in ChatGPT. Use this skill
   whenever the user wants to manage their Resolve account: look up customers or
   invoices, create or send invoices, attach invoice PDFs, track shipments, manage
-  credit notes, or understand the state of their receivables. Triggers on: "find my
-  customer", "create an invoice", "upload a PDF", "send invoice to", "check payment
-  status", "add a shipment", "issue a credit note", "request a credit check", or any
-  task involving Resolve customers, invoices, orders, shipments, payments, or credit
-  notes.
+  credit notes, sync a connected accounting platform, or understand the state of their
+  receivables. Triggers on: "find my customer", "create an invoice", "upload a PDF",
+  "send invoice to", "check payment status", "add a shipment", "issue a credit note",
+  "request a credit check", "sync my QuickBooks", "sync NetSuite", "is my accounting
+  sync working", or any task involving Resolve customers, invoices, orders, shipments,
+  payments, credit notes, or accounting sync.
 ---
 
 # Resolve MCP (ChatGPT)
@@ -308,6 +309,83 @@ wire, etc.).
 
 ---
 
+## Accounting Sync (External Sync)
+
+If the account has an accounting platform connected, Resolve keeps invoices, customers,
+and payments in step with it on its own schedule. These tools let you trigger a
+synchronization on demand and check its state.
+
+| Tool | Purpose |
+|---|---|
+| `get_external_account_sync_settings()` | Read the connected platform and sync state |
+| `sync_external_account_data(platform=..., full_sync=...)` | Queue a sync |
+| `fetch_external_account_invoice_pdf(merchant_invoice_id=...)` | Pull an invoice's PDF from the accounting platform |
+
+Supported platforms: `quickbooks_online` and `netsuite`. **Connecting or disconnecting a
+platform is done in the Resolve dashboard, not through the MCP** — there are no connect
+or disconnect tools.
+
+### Always check the state first
+
+```python
+get_external_account_sync_settings()
+# → platform, status, last_sync_started_at, last_sync_completed_at, progress, error
+```
+
+`status` tells you what's possible:
+
+- `disconnected` — no platform connected (`platform` is `null`). Nothing to sync; tell
+  the user to connect one in the dashboard.
+- `idle` — connected, nothing running. Safe to trigger a sync.
+- `syncing` — a sync is already in progress. Don't queue another; report progress instead.
+- `failed` — the last sync failed. Show `error.message` before retrying.
+
+`progress` (0–100) is only reported for QuickBooks Online; it is `null` for NetSuite.
+
+### Triggering a sync
+
+```python
+# Incremental — only what changed since the last sync (the default)
+sync_external_account_data(platform="quickbooks_online")
+
+# Full — re-fetch everything
+sync_external_account_data(platform="quickbooks_online", full_sync=True)
+```
+
+**A sync is queued, not immediate.** A `200` means the job was accepted. Poll
+`get_external_account_sync_settings()` to follow it: `status` goes `syncing`, then back
+to `idle` on success or `failed` with an `error.message`.
+
+### Rate limits
+
+Tracked per platform, and incremental vs full are budgeted separately:
+
+| Sync type | Limit |
+|---|---|
+| Incremental (`full_sync=False`) | 1 per 5 minutes |
+| Full (`full_sync=True`) | 1 per hour |
+
+Exceeding a limit returns `429` with a `Retry-After` header giving the seconds to wait.
+Don't retry in a loop — tell the user how long to wait. Prefer incremental syncs; only
+use `full_sync=True` when records are actually missing or the user asks for a full
+re-sync, since it burns the much scarcer hourly budget.
+
+### Fetching an invoice PDF from the accounting platform
+
+For an invoice that originated in the connected accounting platform, this pulls the
+platform's own PDF and attaches it to the Resolve invoice — no attachment needed:
+
+```python
+fetch_external_account_invoice_pdf(merchant_invoice_id="<invoice_id>")
+```
+
+This only works if the invoice is already linked to a record on the connected platform.
+A `404` means the invoice doesn't exist on this account; a `400` usually means it isn't
+linked to the accounting platform, in which case ask the user to attach the PDF to the
+conversation instead.
+
+---
+
 ## Webhooks
 
 Set up webhooks to receive real-time events from Resolve. Supported events:
@@ -342,6 +420,9 @@ Always verify webhook signatures using the `x-webhook-signature` HMAC-SHA256 hea
 | "Add tracking to an invoice" | `create_shipment(...)` |
 | "Issue a refund / credit" | `create_credit_note(...)` |
 | "Show recent payments" | `list_payments(limit=25)` |
+| "Sync my QuickBooks / NetSuite now" | `get_external_account_sync_settings` → `sync_external_account_data(platform=...)` |
+| "Is my accounting sync working?" | `get_external_account_sync_settings()` |
+| "Get the PDF from QuickBooks for this invoice" | `fetch_external_account_invoice_pdf(merchant_invoice_id=...)` |
 | "Set up a webhook" | `upsert_webhook(url=..., events=[...])` |
 
 ---

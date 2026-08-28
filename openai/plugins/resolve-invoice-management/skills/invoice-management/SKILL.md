@@ -62,6 +62,21 @@ straight through to the tool parameter.
 
 > **Max file size:** 25 MB. For invoices, always use PDF.
 
+### Shortcut: invoices that came from QuickBooks Online / NetSuite
+
+If the account has an accounting platform connected and the invoice is already linked to
+a record there, no attachment is needed — Resolve can fetch the platform's own PDF and
+attach it for you:
+
+```python
+fetch_external_account_invoice_pdf(merchant_invoice_id="<invoice_id>")
+```
+
+A `400` usually means the invoice isn't linked to the accounting platform, and a `404`
+means it doesn't exist on this account — in either case ask the user to attach the PDF to
+the conversation instead. See the base `resolve-mcp` skill for the full accounting sync
+tools.
+
 ---
 
 ## Creating and Sending an Invoice (full example)

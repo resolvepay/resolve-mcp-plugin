@@ -12,7 +12,7 @@
     {
       "name": "resolve-mcp",
       "source": "./plugins/resolve-mcp",
-      "description": "Base plugin: connects the Resolve MCP server and teaches the assistant Resolve's core workflows — customers, invoices, shipments, payments, and credit notes.",
+      "description": "Base plugin: connects the Resolve MCP server and teaches the assistant Resolve's core workflows — customers, invoices, shipments, payments, credit notes, and accounting sync.",
       "category": "productivity"
     },
     {

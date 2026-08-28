@@ -1,7 +1,7 @@
 {
   "name": "resolve-mcp",
   "version": "1.0.0",
-  "description": "Manage your Resolve Pay account from your AI assistant. Bundles the Resolve MCP connector and the core skill covering customers, invoices, shipments, payments, and credit notes.",
+  "description": "Manage your Resolve Pay account from your AI assistant. Bundles the Resolve MCP connector and the core skill covering customers, invoices, shipments, payments, credit notes, and accounting sync.",
   "author": {
     "name": "Resolve Pay",
     "url": "https://resolvepay.com"
