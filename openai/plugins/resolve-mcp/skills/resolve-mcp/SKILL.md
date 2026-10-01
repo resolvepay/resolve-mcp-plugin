@@ -6,7 +6,8 @@ description: >
   invoices, create or send invoices, attach invoice PDFs, track shipments, manage
   credit notes, or understand the state of their receivables. Triggers on: "find my
   customer", "create an invoice", "upload a PDF", "send invoice to", "check payment
-  status", "add a shipment", "issue a credit note", "request a credit check", or any
+  status", "add a shipment", "issue a credit note", "upload customer documents",
+  "request a credit check", or any
   task involving Resolve customers, invoices, orders, shipments, payments, or credit
   notes.
 ---
@@ -224,6 +225,50 @@ create_customer(
   email            = "owner@acmecorp.com"
 )
 ```
+
+### Customer supporting documents
+
+Select the account with `list_resolve_accounts`. For merchant v5 accounts, find or
+create the customer with `list_customers` / `create_customer`, then call
+`create_customer_document`. For partner accounts, use `partner_list_customers` /
+`partner_create_customer`, then `partner_create_customer_document`. Both require
+write access and take the returned customer relationship ID as
+`merchant_customer_id`. Upload documents separately from customer creation.
+The partner examples below also apply to merchants with `create_customer_document`.
+
+Required metadata: `document_type`, `filename` (including extension), and
+`filetype` (MIME type matching that extension). Supported document types:
+`bank_statements`, `credit_references`, `financial_statements`,
+`payment_history`, and `other`. Bank statements must be PDFs. Other types
+accept PDF, PNG, JPEG, CSV, XLS, or XLSX. Do not use `other_documents` or
+`personal_guarantee`.
+
+Include `additional_data_request_id` only for `bank_statements`, and only for
+an open banking-data request belonging to this customer.
+
+Pass the conversation attachment as `download_url`, and supply the metadata
+separately; the attachment adapter does not populate `filename` or `filetype`:
+
+```python
+partner_create_customer_document(
+  merchant_customer_id = "<customer ID>",
+  document_type        = "bank_statements",
+  filename             = "bank-statement.pdf",
+  filetype             = "application/pdf",
+  download_url         = <attached PDF>
+)
+```
+
+ChatGPT resolves the attachment into a download URL. This selects remote-download
+mode, so no presigned PUT or temp-file tool is needed. Ask for the file if missing;
+never invent a download URL.
+
+A successful response records the document and accepts its transfer; validation
+happens asynchronously. Keep the returned `document_id`. In remote-download mode,
+check `queue_dispatch_status`: `queued` means download was queued, while
+`failed` means dispatch failed even if HTTP status is 200. Report that failure
+instead of claiming the upload completed. The response has no `status` field.
+Customer credit status is not proof that this particular document validated.
 
 ### Credit workflow
 New customers have `credit_status=null`. To get them a credit line:

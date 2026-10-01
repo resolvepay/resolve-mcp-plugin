@@ -4,7 +4,8 @@ description: >
   Customer onboarding and credit management for a Resolve Pay account via the MCP.
   Use this skill for any customer-heavy task: adding new customers, running credit
   checks, tracking enrollment, reading credit lines and available credit, and
-  updating customer details. Triggers on: "add a customer", "create a customer",
+  updating customer details, and uploading supporting customer documents for partners.
+  Triggers on: "upload customer documents", "add a customer", "create a customer",
   "run a credit check", "is [customer] approved", "what's [customer]'s credit line",
   "available credit", "enroll a customer", "update customer details", or any
   customer onboarding or credit workflow.
@@ -69,6 +70,50 @@ user whether to use it instead.
 Update details later with `update_customer(customer_id=..., ...)`.
 
 ---
+
+### Customer supporting documents
+
+Select the account with `list_resolve_accounts`. For merchant v5 accounts, find or
+create the customer with `list_customers` / `create_customer`, then call
+`create_customer_document`. For partner accounts, use `partner_list_customers` /
+`partner_create_customer`, then `partner_create_customer_document`. Both require
+write access and take the returned customer relationship ID as
+`merchant_customer_id`. Upload documents separately from customer creation.
+The partner examples below also apply to merchants with `create_customer_document`.
+
+Required metadata: `document_type`, `filename` (including extension), and
+`filetype` (MIME type matching that extension). Supported document types:
+`bank_statements`, `credit_references`, `financial_statements`,
+`payment_history`, and `other`. Bank statements must be PDFs. Other types
+accept PDF, PNG, JPEG, CSV, XLS, or XLSX. Do not use `other_documents` or
+`personal_guarantee`.
+
+Include `additional_data_request_id` only for `bank_statements`, and only for
+an open banking-data request belonging to this customer.
+
+For local files, omit `download_url` to request a presigned upload:
+
+```python
+upload = partner_create_customer_document(
+  merchant_customer_id = "<customer ID>",
+  document_type        = "bank_statements",
+  filename             = "bank-statement.pdf",
+  filetype             = "application/pdf"
+)
+```
+
+PUT the file bytes directly to `upload.upload_url` before
+`upload.upload_expires_at`, including every header in `upload.upload_headers`.
+Do not read the file bytes into model context. If the document is already hosted,
+supply its public HTTP(S) URL as `download_url` instead; Resolve queues the fetch.
+An existing temp upload's fresh `download_url` can also be used in that mode.
+
+A successful response records the document and accepts its transfer; validation
+happens asynchronously. Keep the returned `document_id`. In remote-download mode,
+check `queue_dispatch_status`: `queued` means download was queued, while
+`failed` means dispatch failed even if HTTP status is 200. Report that failure
+instead of claiming the upload completed. The response has no `status` field.
+Customer credit status is not proof that this particular document validated.
 
 ## The Credit Workflow
 
